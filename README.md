@@ -1,13 +1,19 @@
+[Español](#español) | [English](#english)
+
+---
+
+<div id="español"></div>
+
 # Reconocimiento Facial
 
-Sistema de vision por computador, reconocimiento biometrico y sintesis de voz offline para interaccion en tiempo real. Utiliza YuNet para deteccion facial, SFace para reconocimiento biometrico (embeddings de 128 dimensiones) y Kokoro-82M (ONNX) para respuesta por voz en español.
+Sistema de vision por computador, reconocimiento biometrico y sintesis de voz offline para interaccion en tiempo real. Utiliza YuNet para deteccion facial, SFace para reconocimiento biometrico (embeddings de 128 dimensiones) y Kokoro-82M (ONNX) para sintesis de voz local en español.
 
 ## Requisitos
 
 - Python 3.10 o 3.11
 - Camara web (USB o integrada)
 - macOS / Linux / Windows
-- `espeak-ng` (en macOS: `brew install espeak-ng`, necesario para el motor fonetico de audio)
+- `espeak-ng` (en macOS: `brew install espeak-ng`, requerido para el motor fonetico)
 
 ## Instalacion
 
@@ -23,13 +29,13 @@ python3 -m venv .venv
 source .venv/bin/activate  # En Windows: .venv\Scripts\activate
 ```
 
-3. Instalar librerias:
+3. Instalar dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
 4. Descargar el modelo de voz Kokoro:
-El archivo `kokoro-v1.0.onnx` no viene dentro del repositorio por limite de peso. Se descarga ejecutando:
+El modelo `kokoro-v1.0.onnx` no esta incluido en el repositorio por temas de peso. Para descargarlo:
 ```bash
 python scripts/download_models.py
 ```
@@ -37,35 +43,111 @@ python scripts/download_models.py
 ## Uso
 
 ### Panel Web (FastAPI)
-Inicia la transmision de video y el panel de control en el navegador:
+Para iniciar el servidor con streaming de video y panel de administracion web:
 ```bash
 python run_web.py
 ```
-O con doble clic en `run_web.command` en macOS.
-Acceso: `http://localhost:8000`
+O ejecutando `run_web.command` en macOS.
+Disponible en: `http://localhost:8000`
 
 ### Modo Visor Directo (OpenCV)
-Inicia la ventana con seguimiento y diagnostico en pantalla:
+Para correr el sistema directamente en ventana con metricas y recuadros de tracking:
 ```bash
 python main.py
 ```
 
-Controles:
+Controles de teclado:
 - `q` / `ESC`: Salir
-- `s`: Guardar captura
-- `b`: Ver telemetria en consola
-- `+` / `-`: Modificar umbral de deteccion
+- `s`: Guardar captura del frame actual
+- `b`: Imprimir telemetria en consola
+- `+` / `-`: Subir o bajar umbral de deteccion
 
-### Registro de Usuarios
-Para registrar nuevos rostros usando la camara:
+### Registro de Personas
+Para enrolar un nuevo rostro en la base de datos local usando la camara:
 ```bash
 python scripts/register_person.py --name "Nombre"
 ```
-Para ver la lista de registrados:
+Para listar las personas registradas:
 ```bash
 python scripts/register_person.py --list
 ```
 
 ## Configuracion
 
-Parametros de deteccion, saludos y tiempos de espera configurables en `config/audacia_config.yaml`.
+Parametros de tracking, saludos y tiempos de espera disponibles en `config/audacia_config.yaml`.
+
+---
+
+<div id="english"></div>
+
+# Facial Recognition
+
+Computer vision system for face detection, tracking, biometric recognition, and offline text-to-speech synthesis for real-time human-robot interaction. Powered by YuNet for face detection, SFace for biometric recognition (128-dimensional embeddings), and Kokoro-82M (ONNX) for local Spanish voice synthesis.
+
+## Requirements
+
+- Python 3.10 or 3.11
+- USB or integrated webcam
+- macOS / Linux / Windows
+- `espeak-ng` (on macOS: `brew install espeak-ng`, required by the phonemizer)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/jotha04/Reconocimiento-Facial.git
+cd Reconocimiento-Facial
+```
+
+2. Create and activate a virtual environment:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Download the Kokoro voice model:
+The model file `kokoro-v1.0.onnx` is not tracked in the repository due to file size limits. Download it by running:
+```bash
+python scripts/download_models.py
+```
+
+## Usage
+
+### Web Dashboard (FastAPI)
+Starts the video streaming server and web dashboard:
+```bash
+python run_web.py
+```
+Or double-click `run_web.command` on macOS.
+Access URL: `http://localhost:8000`
+
+### Direct HUD Window (OpenCV)
+Runs the standalone desktop interface with real-time metrics:
+```bash
+python main.py
+```
+
+Keyboard shortcuts:
+- `q` / `ESC`: Quit
+- `s`: Save frame snapshot
+- `b`: Print telemetry benchmarks to console
+- `+` / `-`: Increase or decrease detection threshold
+
+### Enrolling New Faces
+To enroll a new identity using the webcam:
+```bash
+python scripts/register_person.py --name "Name"
+```
+To list all registered identities:
+```bash
+python scripts/register_person.py --list
+```
+
+## Configuration
+
+Detection thresholds, custom greeting phrases, and interaction cooldowns can be customized in `config/audacia_config.yaml`.
