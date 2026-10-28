@@ -1,0 +1,88 @@
+# Configuración de AudacIA - Logitech HD Pro WebCam C920 (1920x1080 @ 30 FPS)
+# Adaptado para sensor 16:9 Full HD, óptica Carl Zeiss con autoenfoque y amplio FOV de 78°
+camera:
+  target_width: 1920
+  target_height: 1080
+  target_fps: 30
+  use_threaded_reader: true
+  max_inference_dimension: null       # Inferencia nativa 1080p completa sin reducción para máxima distancia
+
+detection:
+  model_path: "models/face_detection_yunet_2023mar.onnx"
+  score_threshold: 0.72       # Filtro robusto contra artefactos y falsos positivos al mover la cámara
+  nms_threshold: 0.30
+  min_face_size: 70           # Elimina cualquier ruido, manchas o artefactos diminutos (< 70 px en 1080p)
+
+tracking:
+  max_age: 15                 # Tolerancia de ~0.5s ante pérdidas breves sin retener fantasmas
+  min_hits: 3                 # Detecciones consecutivas mínimas para confirmar track
+  iou_threshold: 0.25         # Umbral mínimo de solapamiento IoU
+  distance_threshold: 0.25    # Distancia normalizada máxima entre centroides para re-asociación
+
+attention:
+  # Tiempos de persistencia (segundos)
+  dwell_candidate_seconds: 0.20     # Tiempo mínimo observando antes de ser evaluado como candidato
+  dwell_engaging_seconds: 0.60      # Tiempo de atención frontal para alcanzar ENGAGING (Verde)
+  disengage_grace_seconds: 2.00     # Tiempo de gracia tras girar la cabeza o mirar el celular antes de caer a DISENGAGED
+
+  # Umbrales de puntuación y compuertas estrictas
+  candidate_score_threshold: 0.25    # Score mínimo para ATTENTION_CANDIDATE (Amarillo)
+  engaging_score_threshold: 0.48     # Score mínimo para ENGAGING (Verde)
+  min_orientation_for_engaging: 0.50 # Orientación frontal razonable
+  frontal_orientation_grace_seconds: 0.70 # Tolerancia a caídas breves de orientación frontal
+
+  # Parámetros geométricos de rostro (píxeles sobre 1920x1080)
+  min_face_height: 50                # Permite detectar personas más lejos en 1080p nativo (~3.0m - 3.5m)
+  optimal_face_height_min: 90        # Inicio de zona de interacción (~2.0m - 2.5m)
+  optimal_face_height_max: 550       # Primer plano adecuado (~0.8m)
+  max_face_height: 800               # Rostro cercano (< 0.4 m)
+
+  # Análisis de TODA la sección de la cámara (FOV 100% horizontal [0.0 - 1.0])
+  central_zone_min_x: 0.0
+  central_zone_max_x: 1.0
+
+recognition:
+  model_path: "models/face_recognition_sface_2021dec.onnx"
+  db_path: "data/identities.db"
+  similarity_threshold: 0.44         # Umbral robusto multi-cámara (permite reconocer a Jonathan sin falsos Unknown)
+  ambiguity_margin: 0.08             # Margen mínimo de ventaja frente a un 2do candidato distinto
+  samples_for_consolidation: 3       # Número de muestras temporales necesarias para confirmar KNOWN
+  adaptive_learning_enabled: true     # Enrolamiento adaptativo continuo en segundo plano (para barba/tiempo)
+  adaptive_cooldown_seconds: 1800.0  # Mínimo intervalo de auto-actualización por persona (30 min)
+
+interaction:
+  group_stabilization_seconds: 1.20   # Ventana suficiente para consolidar a todas las personas del grupo antes de saludar
+  identity_resolution_timeout_seconds: 2.0 # Tiempo máximo esperando que identidades consoliden
+  session_timeout_seconds: 3.5        # Tiempo sin participantes en ENGAGING antes de cerrar sesión (evita dividir interacción)
+  person_cooldown_seconds: 45.0       # Cooldown por persona conocida antes de poder ser saludada de nuevo
+  unknown_cooldown_seconds: 25.0      # Cooldown para sesiones anónimas
+  allow_late_joiner_greeting: true    # Saludar con su respectivo cooldown a quien se sume a la escena
+
+greetings:
+  single_known: "Hola, bienvenido a Audacia, {name}."
+  multiple_known: "Hola, bienvenidos a Audacia, {names}."
+  single_unknown: "Bienvenido a Audacia."
+  multiple_unknown: "Hola, bienvenidos a Audacia."
+  mixed_group: "Hola, bienvenidos a Audacia."
+
+audio:
+  enabled: true
+  tts_engine: "kokoro"               # Motor principal: "kokoro" | "pyttsx3" (fallback o rollback)
+  kokoro_voice: "ef_dora"            # Voz femenina de alta naturalidad
+  kokoro_language: "es"              # Idioma español
+  kokoro_model_path: "models/kokoro/kokoro-v1.0.onnx"
+  kokoro_voices_path: "models/kokoro/voices-v1.0.bin"
+  kokoro_model_version: "kokoro-v1.0"
+  cache_enabled: true                # Caché persistente de audio
+  cache_dir: "data/audio_cache"      # Directorio de persistencia de WAVs
+  lazy_load: false                   # Precargar modelo en arranque (evita congelamientos durante el stream)
+  fallback_to_native: true           # Degradar a pyttsx3 ante fallo de Kokoro
+  voice_rate: 155                    # Velocidad para motor nativo de respaldo
+  voice_volume: 1.0                  # Volumen [0.0, 1.0]
+  voice_language_preference: "es"
+  pronunciation_overrides:
+    Audacia: "Audacia"
+    AudacIA: "Audacia"
+    Jonathan: "Yónatan"
+    Joshua: "Yóshua"
+

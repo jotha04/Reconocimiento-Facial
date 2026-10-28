@@ -1,0 +1,67 @@
+# ==============================================================================
+# AudacIA / FR2000 - Git Ignore Configuration
+# ==============================================================================
+
+# --- Python & Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# --- OS Metadata ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# --- IDEs & Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Modelos Neuronales Grandes (>100MB, bloqueados por cuota de GitHub) ---
+# Descargar ejecutando: python scripts/download_models.py
+models/kokoro/kokoro-v1.0.onnx
+
+# --- Privacidad y Datos Dinámicos Locales ---
+# Base de datos biométrica y fotos de usuarios
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.jpg
+data/*.jpeg
+data/*.png
+
+# Caché persistente de audio sintetizado
+data/audio_cache/*
+!data/audio_cache/.gitkeep
+
+# Capturas HUD y snapshots en vivo
+data/snapshots/*
+!data/snapshots/.gitkeep
+
+# Fotos subidas de registro biométrico
+uploads/*
+!uploads/.gitkeep
+
+# Logs y variables de entorno
+*.log
+.env
+.env.*
