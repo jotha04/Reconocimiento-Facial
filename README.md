@@ -76,6 +76,10 @@ python scripts/register_person.py --list
 
 Parametros de tracking, saludos y tiempos de espera disponibles en `config/audacia_config.yaml`.
 
+## Licencia
+
+Distribuido bajo la licencia MIT. Consulta el archivo `LICENSE` para mas detalles.
+
 ---
 
 <div id="english"></div>
@@ -151,3 +155,7 @@ python scripts/register_person.py --list
 ## Configuration
 
 Detection thresholds, custom greeting phrases, and interaction cooldowns can be customized in `config/audacia_config.yaml`.
+
+## License
+
+Distributed under the MIT License. See the `LICENSE` file for details.
